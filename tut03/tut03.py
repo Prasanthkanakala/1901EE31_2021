@@ -1,52 +1,65 @@
-print("My name is Kanakala Durga Prasanth.  My roll no is 1901EE31")
+print('My name is Kanakala Durga Prasanth. My roll no is 1901EE31')
+
 import os
  
- 
-def write_to_file(data, file_name):
-    """Writes list of lists into CSV file"""
-    with open(file_name, "w") as f:
-        f.write("\n".join((",".join(row)) for row in data))
- 
+
  
 def output_by_subject():
-    roll_dict = {}
-    DIRECTORY = "output_individual_roll"
- 
-    with open("regtable_old.csv", "r") as f:
-        for row in f:
-            row = row.strip().split(",")
-            rollno, register_sem, _, subno, _, _, _, _, sub_type = row
-            if rollno not in roll_dict:
-                roll_dict[rollno] = []
-            roll_dict[rollno].append([rollno, register_sem, subno, sub_type])
+    
+    DIRECTORY = "output_by_subject"
  
     if not os.path.exists(DIRECTORY):
         os.makedirs(DIRECTORY)
- 
-    for rollno in roll_dict:
-        write_to_file(roll_dict[rollno], os.path.join(DIRECTORY, rollno + ".csv"))
+    
+    with open('regtable_old.csv', 'r') as info:
+        for sinfo in info:
+            data = sinfo.split(',')
+            del data[4:8]
+            del data[2:3]
+            if (data[2] =="subno"):continue
+            try:
+                with open(f"output_by_subject\\{data[2]}.csv"): 
+                    with open((f"output_by_subject\\{data[2]}.csv"), 'a') as head:
+                        data=",".join(data)
+                        head.write(data)
+
+            except IOError:
+                with open((f"output_by_subject\\{data[2]}.csv"), 'w') as body:
+                        body.write("rollno,register_sem,subno,sub_type\n")
+                        data=",".join(data)
+                        body.write(data)
+    return
  
  
 def output_individual_roll():
-    subject_dict = {}
-    DIRECTORY = "output_by_subject"
+    
+    DIRECTORY = "output_individual_roll"
  
-    with open("regtable_old.csv", "r") as f:
-        for row in f:
-            row = row.strip().split(",")
-            rollno, register_sem, _, subno, _, _, _, _, sub_type = row
-            if subno not in subject_dict:
-                subject_dict[subno] = []
-            subject_dict[subno].append([rollno, register_sem, subno, sub_type])
+   
  
     if not os.path.exists(DIRECTORY):
         os.makedirs(DIRECTORY)
- 
-    for subno in subject_dict:
-        write_to_file(subject_dict[subno], os.path.join(DIRECTORY, subno + ".csv"))
- 
- 
+    
+    with open('regtable_old.csv', 'r') as info:
+        for sinfo in info:
+            data = sinfo.split(',')
+            del data[4:8]
+            del data[2:3]
+            if (data[0] =="rollno"):continue
+            try: 
+                with open((f"output_individual_roll\\{data[0]}.csv")):
+                    with open((f"output_individual_roll\\{data[0]}.csv"), 'a') as head:
+                        data=",".join(data)
+                        head.write(data)
 
+            except IOError:
+                with open((f"output_individual_roll\\{data[0]}.csv"), 'w') as body:
+                        body.write("rollno,register_sem,subno,sub_type\n")
+                        data=",".join(data)
+                        body.write(data)
+    return
+ 
+ 
 output_by_subject()
 output_individual_roll()
  
