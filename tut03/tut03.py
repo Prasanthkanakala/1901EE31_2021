@@ -8,17 +8,17 @@ def output_by_subject():
     
     DIRECTORY = "output_by_subject"
  
-    if not os.path.exists(DIRECTORY):
+    if not os.path.exists(DIRECTORY): #checking the existence of directory
         os.makedirs(DIRECTORY)
     
-    with open('regtable_old.csv', 'r') as info:
-        for sinfo in info:
+    with open('regtable_old.csv', 'r') as info: #reading the csv file
+        for sinfo in info: 
             data = sinfo.split(',')
-            del data[4:8]
+            del data[4:8]  #removing unwanted columns
             del data[2:3]
             if (data[2] =="subno"):continue
             try:
-                with open(f"output_by_subject\\{data[2]}.csv"): 
+                with open(f"output_by_subject\\{data[2]}.csv"): #adding heading
                     with open((f"output_by_subject\\{data[2]}.csv"), 'a') as head:
                         data=",".join(data)
                         head.write(data)
@@ -37,17 +37,17 @@ def output_individual_roll():
  
    
  
-    if not os.path.exists(DIRECTORY):
+    if not os.path.exists(DIRECTORY):  #checking the existence of directory
         os.makedirs(DIRECTORY)
     
-    with open('regtable_old.csv', 'r') as info:
+    with open('regtable_old.csv', 'r') as info: #reading the csv file
         for sinfo in info:
             data = sinfo.split(',')
-            del data[4:8]
+            del data[4:8]  #removing unwanted columns
             del data[2:3]
             if (data[0] =="rollno"):continue
             try: 
-                with open((f"output_individual_roll\\{data[0]}.csv")):
+                with open((f"output_individual_roll\\{data[0]}.csv")): #adding heading
                     with open((f"output_individual_roll\\{data[0]}.csv"), 'a') as head:
                         data=",".join(data)
                         head.write(data)
