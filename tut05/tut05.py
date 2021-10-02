@@ -19,7 +19,7 @@ def result_calculate(Spi,ws_sheet,Credits):   #Function to calculate final resul
     #counting credits
     ws_sheet.append(["Semester wise Credits taken"]+Credits)
     ws_sheet.append(["SPI per sem"]+Spi)
-    #prefix_credits = [sum(Credits[:i+1]) for i in range(len(Credits))]
+    #making pre_credits list
     pre_credits_list=[]
     for i in range(len(Credits)):
         pre_credits_list.append(sum(Credits[:i+1]))
@@ -28,7 +28,7 @@ def result_calculate(Spi,ws_sheet,Credits):   #Function to calculate final resul
     CPI_num=[]
     for i in range(len(Credits)):
         CPI_num.append(Spi[i]*Credits[i])
-    #CPI_num=[Spi[i]*Credits[i] for i in range(len(Credits))] 
+    
     #CPI calculation formula
     CPI_Cal=[]
     for i in range(len(Spi)):
@@ -42,7 +42,7 @@ def is_sheet_exist(sheet_name,wb_sheet): #function to check the existance of she
             return 1
     return 0
 
-def Spi_calculator(wb_sheet,grade_to_score): #function to calculate SPI
+def Spi_calculator(wb_sheet): #function to calculate SPI
     Spi,Credits= [],[]  #initializing lists
     for sheet in wb_sheet.sheetnames[1:]:
         ws_sheet = wb_sheet[sheet]  
@@ -138,7 +138,7 @@ def generate_marksheet(): #main function
             ws_sheet.append(["Name of Student",Name])
             ws_sheet.append(["Branch/Department",Rollno[4:6]])
             #calculating SPI
-            Spi,Credits= Spi_calculator(wb_sheet,grade_to_score)
+            Spi,Credits= Spi_calculator(wb_sheet)
             #calculating results
             result_calculate(Spi,ws_sheet,Credits)
             
