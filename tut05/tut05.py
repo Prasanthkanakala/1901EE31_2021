@@ -1,24 +1,39 @@
 print('My name is Kanakala Durga Prasanth. My roll no is 1901ee31')
 
-#impoting modules
+#importing modules
 import os
 from openpyxl import Workbook
 from openpyxl import load_workbook
 import csv
 
+os.system('cls')
+
+#created a map to convert the grade to score in numericals       
+grade_to_score = {'AA':10,'AB':9,'BB':8,'BC':7,'CC':6,'CD':5,'DD':4,'F':0,'I':0,
+                'AA*':10,'AB*':9,'BB*':8,'BC*':7,'CC*':6,'CD*':5,'DD*':4,'F*':0,'I*':0}
 
 
 
 def result_calculate(Spi,ws_sheet,Credits):   #Function to calculate final result    
-    ws_sheet.append(["Semester No"]+[x for x in range(1,9)])
+    ws_sheet.append(["Semester No"]+[semno for semno in range(1,9)])
     #counting credits
     ws_sheet.append(["Semester wise Credits taken"]+Credits)
     ws_sheet.append(["SPI per sem"]+Spi)
-    prefix_credits = [sum(Credits[:i+1]) for i in range(len(Credits))]
-    ws_sheet.append(["Total Credits taken"]+prefix_credits) #counting total credits
-    CPI_num=[Spi[i]*Credits[i] for i in range(len(Credits))] 
+    #prefix_credits = [sum(Credits[:i+1]) for i in range(len(Credits))]
+    pre_credits_list=[]
+    for i in range(len(Credits)):
+        pre_credits_list.append(sum(Credits[:i+1]))
+
+    ws_sheet.append(["Total Credits taken"]+pre_credits_list) #counting total credits
+    CPI_num=[]
+    for i in range(len(Credits)):
+        CPI_num.append(Spi[i]*Credits[i])
+    #CPI_num=[Spi[i]*Credits[i] for i in range(len(Credits))] 
     #CPI calculation formula
-    ws_sheet.append(["Total CPI "]+[round(sum(CPI_num[:i+1])/prefix_credits[i],2) for i in range(len(Spi))])
+    CPI_Cal=[]
+    for i in range(len(Spi)):
+        CPI_Cal.append(round(sum(CPI_num[:i+1])/pre_credits_list[i],2)) 
+    ws_sheet.append(["Total CPI "]+CPI_Cal)
     return
 
 def is_sheet_exist(sheet_name,wb_sheet): #function to check the existance of sheet ina workbook
@@ -52,72 +67,82 @@ def generate_marksheet(): #main function
         os.mkdir(Directory)
 
     #opening and reading subjects file
-    Subject_data = open("subjects_master.csv", "r")
-    subject_csv_file=csv.reader(Subject_data)
-    subject_list =  [list(record) for record in subject_csv_file][1:] #creating a list of subject data
-    #creating a dictionary to store the data
-    subject_dict = {}
-    length = 0
-    #adding data
-    for data in subject_list:
-        subno = data[0] 
-        if subno not in subject_dict: #checking for existant data
-            subject_dict[subno] = data[1:]
-            length = max(length,len(data[1]))  
+    with open("subjects_master.csv", "r") as Subject_data:
+        subject_csv_file=csv.reader(Subject_data)
+        subject_list=[]
+        for data in subject_csv_file:
+            subject_list.append(list(data))
+        subject_list=subject_list[1:]
+        #creating a list of subject data
+        #creating a dictionary to store the data
+        subject_dict = {}
+        length = 0
+        #adding data
+        for data in subject_list:
+            subno = data[0] 
+            if subno not in subject_dict: #checking for existant data
+                subject_dict[subno] = data[1:]
+                length = max(length,len(data[1]))  
     #opening and reading grades file
-    score_data = open("grades.csv", "r")
-    score_csv = csv.reader(score_data)
-    #creating a list for score data
-    score_list = [list(record) for record in score_csv][1:] 
-    #initializing the counter
-    counter=1
-    for data in score_list:
-        Roll,Sem_no, = data[0],data[1]  #initializing the roll no
-        file_path='./output/'+'{}.xlsx'.format(Roll)
-        if not os.path.isfile(file_path): #checking the exitance of a file
-            get_workbook(data) #creating a new workbook
-        #loading the workbook
-        wb_sheet=load_workbook(r'output\\{}.xlsx'.format(Roll))
-        #checking the existance of sheet
-        if not is_sheet_exist(f'Sem{Sem_no}',wb_sheet):
-            wb_sheet.create_sheet(f'Sem{Sem_no}',int(Sem_no))
-            ws_sheet = wb_sheet["Sem{}".format(int(Sem_no))]
-            ws_sheet.column_dimensions["C"].width = length
-        ws_sheet = wb_sheet[f"Sem{int(Sem_no)}"]
-        print("{0}making {1}, please wait till completion".format(counter,Sem_no))
-        if ws_sheet.max_row==1 : #adding header row
-            ws_sheet.append(["Sl No.","Subject No.","Subject Name","L-T-P","Credit","Subject Type","Grade"])
-        SubCode,Credit,Grade,Sub_Type = data[2:] #initializing variables
-        #initializing variables
-        subname,ltp,crd = subject_dict[f"{SubCode}"][0],subject_dict[f"{SubCode}"][1],subject_dict[f"{SubCode}"][2]
-        #adding data to sheet       
-        ws_sheet.append([ws_sheet.max_row,SubCode,subname,ltp,crd,Sub_Type,Grade])
-        wb_sheet.save(r'output\\{}.xlsx'.format(Roll))          
-        counter+=1;
-    #created a map to convert the grade to score in numericals       
-    grade_to_score = {'AA':10,'AB':9,'BB':8,'BC':7,'CC':6,'CD':5,'DD':4,'F':0,'I':0,
-                'AA*':10,'AB*':9,'BB*':8,'BC*':7,'CC*':6,'CD*':5,'DD*':4,'F*':0,'I*':0}
-    #opening and reading names-roll file
-    names_data = open("names-roll.csv","r")
-    names_csv = csv.reader(names_data)
-    #created a list for names
-    names_list = [list(record) for record in names_csv][1:] 
-    #adding data
-    for data in names_list:
-        name,Roll = data[1],data[0] #initializing the variables
-        wb_sheet = load_workbook(r'output\\{}.xlsx'.format(Roll))
-        ws_sheet =wb_sheet.active
-        #adding data to sheets
-        ws_sheet.column_dimensions["A"].width = 30
-        ws_sheet.append(["RollNo",Roll])
-        ws_sheet.append(["Name of Student",name])
-        ws_sheet.append(["Branch/Department",Roll[4:6]])
-        #calculating SPI
-        Spi,Credits= Spi_calculator(wb_sheet,grade_to_score)
-        #calculating results
-        result_calculate(Spi,ws_sheet,Credits)
+    with open("grades.csv", "r") as score_data:
+        score_csv = csv.reader(score_data)
+        #creating a list for score data
         
-        wb_sheet.save(r'output\\{}.xlsx'.format(Roll)) 
+        score_list=[]
+        for data in score_csv:
+            score_list.append(list(data))
+        score_list=score_list[1:]
+        #initializing the counter
+        counter=1
+        for data in score_list:
+            Rollno,Sem_no, = data[0],data[1]  #initializing the roll no
+            file_path='./output/'+'{}.xlsx'.format(Rollno)
+            if not os.path.isfile(file_path): #checking the exitance of a file
+                get_workbook(data) #creating a new workbook
+            #loading the workbook
+            wb_sheet=load_workbook(r'output\\{}.xlsx'.format(Rollno))
+            #checking the existance of sheet
+            if not is_sheet_exist(f'Sem{Sem_no}',wb_sheet):
+                wb_sheet.create_sheet(f'Sem{Sem_no}',int(Sem_no))
+                ws_sheet = wb_sheet["Sem{}".format(int(Sem_no))]
+                ws_sheet.column_dimensions["C"].width = length
+            ws_sheet = wb_sheet[f"Sem{int(Sem_no)}"]
+            print("{0}making {1}, please wait till completion".format(counter,Sem_no))
+            if ws_sheet.max_row==1 : #adding header row
+                ws_sheet.append(["Sl No.","Subject No.","Subject Name","L-T-P","Credit","Subject Type","Grade"])
+            SubCode,Credit,Grade,Sub_Type = data[2:] #initializing variables
+            #initializing variables
+            subname,ltp,crd = subject_dict[f"{SubCode}"][0],subject_dict[f"{SubCode}"][1],subject_dict[f"{SubCode}"][2]
+            #adding data to sheet       
+            ws_sheet.append([ws_sheet.max_row,SubCode,subname,ltp,crd,Sub_Type,Grade])
+            wb_sheet.save(r'output\\{}.xlsx'.format(Rollno))          
+            counter+=1;
+    
+    #opening and reading names-roll file
+    with open("names-roll.csv","r") as names_data:
+        names_csv = csv.reader(names_data)
+        #created a list for names
+        names_list=[]
+        for data in names_csv:
+            names_list.append(list(data))
+        names_list=names_list[1:]
+        
+        #adding data
+        for data in names_list:
+            Name,Rollno = data[1],data[0] #initializing the variables
+            wb_sheet = load_workbook(r'output\\{}.xlsx'.format(Rollno))
+            ws_sheet =wb_sheet.active
+            #adding data to sheets
+            ws_sheet.column_dimensions["A"].width = 30
+            ws_sheet.append(["RollNo",Rollno])
+            ws_sheet.append(["Name of Student",Name])
+            ws_sheet.append(["Branch/Department",Rollno[4:6]])
+            #calculating SPI
+            Spi,Credits= Spi_calculator(wb_sheet,grade_to_score)
+            #calculating results
+            result_calculate(Spi,ws_sheet,Credits)
+            
+            wb_sheet.save(r'output\\{}.xlsx'.format(Rollno)) 
     return
 generate_marksheet() #calling the function
 
