@@ -19,7 +19,7 @@ def result_calculate(Spi,ws_sheet,Credits):   #Function to calculate final resul
     #counting credits
     ws_sheet.append(["Semester wise Credits taken"]+Credits)
     ws_sheet.append(["SPI per sem"]+Spi)
-    #making pre_credits list
+    
     pre_credits_list=[]
     for i in range(len(Credits)):
         pre_credits_list.append(sum(Credits[:i+1]))
@@ -36,53 +36,8 @@ def result_calculate(Spi,ws_sheet,Credits):   #Function to calculate final resul
     ws_sheet.append(["Total CPI "]+CPI_Cal)
     return
 
-def is_sheet_exist(sheet_name,wb_sheet): #function to check the existance of sheet ina workbook
-    for sheet in wb_sheet.sheetnames:
-        if sheet == sheet_name: #condition for checking the existance
-            return 1
-    return 0
-
-def Spi_calculator(wb_sheet): #function to calculate SPI
-    Spi,Credits= [],[]  #initializing lists
-    for sheet in wb_sheet.sheetnames[1:]:
-        ws_sheet = wb_sheet[sheet]  
-        credits = [int(cell.value) for cell in ws_sheet["E"][1:]]
-        spi = [grade_to_score[cell.value.strip().strip("*")] for cell in ws_sheet["G"][1:]]
-        Credits.append(sum(credits))
-        #spi calculation formula
-        Spi.append(round(sum([spi[i]*credits[i] for i in range(len(spi))])/sum(credits),2))
-    return Spi,Credits
-
-def get_workbook(data): #creating a workbook
-    wb_sheet=Workbook()
-    ws_sheet=wb_sheet.active
-    ws_sheet.title = "Overall"
-    wb_sheet.save(f'output\\{data[0]}.xlsx')
-    return
-
-def generate_marksheet(): #main function
-    Directory =  "output"
-    #checking the existence of directory
-    if not os.path.exists(Directory):
-        os.mkdir(Directory)
-
-    #opening and reading subjects file
-    with open("subjects_master.csv", "r") as Subject_data:
-        subject_csv_file=csv.reader(Subject_data)
-        subject_list=[]
-        for data in subject_csv_file:
-            subject_list.append(list(data))
-        subject_list=subject_list[1:]
-        #creating a list of subject data
-        #creating a dictionary to store the data
-        subject_dict = {}
-        length = 0
-        #adding data
-        for data in subject_list:
-            subno = data[0] 
-            if subno not in subject_dict: #checking for existant data
-                subject_dict[subno] = data[1:]
-                length = max(length,len(data[1]))  
+#function to make score sheets in output files
+def score_sheet_maker(subject_dict,length):
     #opening and reading grades file
     with open("grades.csv", "r") as score_data:
         score_csv = csv.reader(score_data)
@@ -117,6 +72,64 @@ def generate_marksheet(): #main function
             ws_sheet.append([ws_sheet.max_row,SubCode,subname,ltp,crd,Sub_Type,Grade])
             wb_sheet.save(r'output\\{}.xlsx'.format(Rollno))          
             counter+=1;
+    return
+
+def is_sheet_exist(sheet_name,wb_sheet): #function to check the existance of sheet ina workbook
+    for sheet in wb_sheet.sheetnames:
+        if sheet == sheet_name: #condition for checking the existance
+            return 1
+    return 0
+
+def get_subject_dictionary(): #fuction to create subject dictionary
+    #opening and reading subjects file
+    with open("subjects_master.csv", "r") as Subject_data:
+        subject_csv_file=csv.reader(Subject_data)
+        subject_list=[]
+        for data in subject_csv_file:
+            subject_list.append(list(data))
+        subject_list=subject_list[1:]
+        #creating a list of subject data
+        #creating a dictionary to store the data
+        subject_dict = {}
+        length = 0
+        #adding data
+        for data in subject_list:
+            subno = data[0] 
+            if subno not in subject_dict: #checking for existant data
+                subject_dict[subno] = data[1:]
+                length = max(length,len(data[1]))  
+    return subject_dict,length
+
+def Spi_calculator(wb_sheet): #function to calculate SPI
+    Spi,Credits= [],[]  #initializing lists
+    for sheet in wb_sheet.sheetnames[1:]:
+        ws_sheet = wb_sheet[sheet]  
+        credits = [int(cell.value) for cell in ws_sheet["E"][1:]]
+        spi = [grade_to_score[cell.value.strip().strip("*")] for cell in ws_sheet["G"][1:]]
+        Credits.append(sum(credits))
+        #spi calculation formula
+        Spi.append(round(sum([spi[i]*credits[i] for i in range(len(spi))])/sum(credits),2))
+    return Spi,Credits
+
+def get_workbook(data): #creating a workbook
+    wb_sheet=Workbook()
+    ws_sheet=wb_sheet.active
+    ws_sheet.title = "Overall"
+    wb_sheet.save(f'output\\{data[0]}.xlsx')
+    return
+
+def generate_marksheet(): #main function
+    Directory =  "output"
+    #checking the existence of directory
+    if not os.path.exists(Directory):
+        os.mkdir(Directory)
+
+    #making a dictionary to store subject data
+    subject_dict=[]
+    subject_dict,length=get_subject_dictionary()
+
+    #program to make scoresheets
+    score_sheet_maker(subject_dict,length)
     
     #opening and reading names-roll file
     with open("names-roll.csv","r") as names_data:
