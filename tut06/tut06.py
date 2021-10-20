@@ -7,7 +7,14 @@ import re
 
 def rename_Breaking_bad(webseries_name,season_padding,episode_padding):
     #creating path
-    path=os.path.join(os.getcwd(),"srt",webseries_name)
+    folder1 = "correct_srt"
+ 
+    if not os.path.exists(folder1): 
+        os.makedirs(folder1)
+    destiny=os.path.join(os.getcwd(),"correct_srt",webseries_name)  #setting the path for final file
+    #source path
+    path=os.path.join(os.getcwd(),"wrong_srt",webseries_name)
+    dest=os.path.join(os.getcwd(),"correct_srt")
     title='Breaking Bad'
     sea_pad=season_padding
     epi_pad=episode_padding
@@ -36,17 +43,30 @@ def rename_Breaking_bad(webseries_name,season_padding,episode_padding):
             new_ep = new_ep.zfill(int(epi_pad))
             #Adding final name
             f_name=title+" - "+"Season "+ str(new_season)+" Episode "+str(new_ep)+"."+file_type
-            des=os.path.join(path,f_name)
+            des=os.path.join(destiny,f_name)
+            if not os.path.isdir(destiny):
+                #making directory
+                os.chdir(dest)
+                os.mkdir("Breaking Bad")
             if not os.path.isfile(des):
-                os.rename(src,des)
-            else :
-                os.remove(src)
+                #making file
+                os.chdir(destiny)
+                with open(f_name, 'w') as file:
+                 pass
     print("Breaking Bad series is renamed")
     return
 #function to rename GOT
 def rename_Gameofthrones(webseries_name,season_padding,episode_padding):
     #Creating path
-    path=os.path.join(os.getcwd(),"srt",webseries_name)
+    folder1 = "correct_srt"
+ 
+    if not os.path.exists(folder1): 
+        os.makedirs(folder1)
+    #making path for final file
+    destiny=os.path.join(os.getcwd(),"correct_srt",webseries_name)
+    #source path
+    path=os.path.join(os.getcwd(),"wrong_srt",webseries_name)
+    dest=os.path.join(os.getcwd(),"correct_srt")
     title='Game of Thrones'
     sea_pad=season_padding
     epi_pad=episode_padding
@@ -62,18 +82,31 @@ def rename_Gameofthrones(webseries_name,season_padding,episode_padding):
             sea_num,ep_num=[str(int(x)) for x in name.split("x")]
             #Adding final title
             f_name=title+" - "+"Season "+ sea_num.zfill(sea_pad)+" Episode "+ep_num.zfill(epi_pad)+" - "+ep_name+"."+file_type
-            des=os.path.join(path,f_name)
+            des=os.path.join(destiny,f_name)
+            if not os.path.isdir(destiny):
+                os.chdir(dest)
+                #making directory
+                os.mkdir("Game of Thrones")
             if not os.path.isfile(des):
-                os.rename(src,des)
-            else :
-                os.remove(src)
+                os.chdir(destiny)
+                #creating a file
+                with open(f_name, 'w') as file:
+                 pass
     print("GOT series is renamed")
     return
 
 #Function to rename Lucifer series
 def rename_Lucifer(webseries_name,season_padding,episode_padding):
     #creating path
-    path=os.path.join(os.getcwd(),"srt",webseries_name)
+    folder1 = "correct_srt"
+ 
+    if not os.path.exists(folder1): 
+        os.makedirs(folder1)
+    #setting path for final file
+    destiny=os.path.join(os.getcwd(),"correct_srt",webseries_name)
+    dest=os.path.join(os.getcwd(),"correct_srt")
+    #source path
+    path=os.path.join(os.getcwd(),"wrong_srt",webseries_name)
     title='Lucifer'
     sea_pad=season_padding
     epi_pad=episode_padding
@@ -89,11 +122,17 @@ def rename_Lucifer(webseries_name,season_padding,episode_padding):
             sea_num,ep_num=[str(int(x)) for x in name.split("x")]
             #adding final name to file
             f_name=title+" - "+"Season "+ sea_num.zfill(sea_pad)+" Episode "+ep_num.zfill(epi_pad)+" - "+ep_name+"."+file_type
-            des=os.path.join(path,f_name)
+            des=os.path.join(destiny,f_name)
+            if not os.path.isdir(destiny): #checking the existance of a directory
+                os.chdir(dest)
+                #making a directory
+                os.mkdir("Lucifer")
             if not os.path.isfile(des):
-                os.rename(src,des)
-            else :
-                os.remove(src)
+                #checking the existence of a file
+                os.chdir(destiny)
+                #making a file
+                with open(f_name, 'w') as file:
+                 pass
     print("Lucifer series is renamed")
     return
 
