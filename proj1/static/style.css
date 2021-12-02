@@ -1,0 +1,76 @@
+body {
+    background: 	#00ffff url('https://images.unsplash.com/photo-1634176866089-b633f4aec882?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80');
+    background-size: auto;
+    background-position: 1em 1em;
+    color: rgb(124, 84, 103);
+    text-align: center;
+    background-position-x: 0%;
+    background-position-y: 0%;
+}
+
+label {
+    color: #0addaf;
+    font-weight: bold;
+    display:block;
+    margin-bottom: 0em;
+    font-size: 1.2em;
+}
+
+input[type=file] {
+    border: 1px solid #707070;
+    width: 40%;
+    padding: 1em;
+    box-sizing: border-box ;
+    border-radius: .5em;
+    margin-top: 0.2em;
+}
+
+input[type=text] {
+    border: 1px solid #707070;
+    width: 35%;
+    padding: 1em;
+    box-sizing: border-box ;
+    border-radius: .5em;
+    margin-top: 1.2em;
+}
+
+button {
+    border: 1px solid #707070;
+    width: 10%;
+    padding: 0.5em;
+    box-sizing: border-box ;
+    border-radius: .5em;
+    margin-top: 0.2em;
+    margin-bottom: -1%;
+}
+
+.Upload{
+    background: none;
+    border: none;
+    color:white;
+    background-color:#6f42c1;
+    font-size: small;
+    padding:0.5rem 1rem;
+    cursor: pointer;
+    border-radius: 0.5rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
+.App:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+.generate{
+    background: none;
+    border: none;
+    color:white;
+    background-color: rgb(42, 76, 185); 
+    font-size: small;
+    padding:0.5rem;
+    width: 40%;
+    cursor: pointer;  
+    border-radius: 0.5rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+}
