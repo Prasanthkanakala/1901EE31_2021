@@ -203,12 +203,12 @@ def generate_marksheet(pos=5,neg=1):
             
             sheet.cell(row=12,column=2).font=Font(size=12,color="00008000",name="Calibri")
             sheet.cell(row=12,column=2).alignment=Alignment('center')
-            sheet.cell(row=12,column=2).value=str(right*5)
+            sheet.cell(row=12,column=2).value=str(right*pos)
             sheet.cell(row=12,column=2).border=border
 
             sheet.cell(row=12,column=3).font=Font(size=12,color="00FF0000",name="Calibri")
             sheet.cell(row=12,column=3).alignment=Alignment('center')
-            sheet.cell(row=12,column=3).value=str(wrong*(-1))
+            sheet.cell(row=12,column=3).value=str(wrong*(neg))
             sheet.cell(row=12,column=3).border=border
 
             sheet.cell(row=12,column=5).font=Font(size=12,name="Calibri",color='000000FF')
@@ -226,25 +226,28 @@ def generate_marksheet(pos=5,neg=1):
         no_stu_master+=1
 
 
+def generate_concise_marksheet():
+    response_file.insert(5,'score_after_negative',final_score,True)
+    response_file['Status']=status
+    response_file.to_excel('./sample_output/marksheet/concise_marksheet.xlsx')
 
-
-def generate_concise_marksheet(mrks,wmrks):
-    concise_marksheet = response_file
-    crt_opts_list = mini.get_answer()
-    if crt_opts_list == []:
-        return "Error!!!Answer is not exist in responses"
-    last_list,score_af_neg= [],[]
-    for index,row in response_file.iterrows():
-        curr_opts = [key for key in row][7:]
-        result,lst = mini.calculate(mrks,wmrks,crt_opts_list,curr_opts)
-        last_list.append(lst)
-        score_af_neg.append(str(result)+"/"+str(mrks*len(crt_opts_list)))
-    concise_marksheet.insert(loc =6,column ="Score_After_Negative",value =score_af_neg)
-    concise_marksheet["Options"] = last_list
-    os.makedirs("sample_output",exist_ok = True)
-    os.makedirs(sample_output_path,exist_ok = True)
-    concise_marksheet.to_csv(sample_output_path+"/concise_marksheet.csv", index=False)
-    return  
+#def generate_concise_marksheet(mrks,wmrks):
+#    concise_marksheet = response_file
+#    crt_opts_list = mini.get_answer()
+#    if crt_opts_list == []:
+#        return "Error!!!Answer is not exist in responses"
+#    last_list,score_af_neg= [],[]
+#    for index,row in response_file.iterrows():
+#        curr_opts = [key for key in row][7:]
+#        result,lst = mini.calculate(mrks,wmrks,crt_opts_list,curr_opts)
+#        last_list.append(lst)
+#        score_af_neg.append(str(result)+"/"+str(mrks*len(crt_opts_list)))
+#    concise_marksheet.insert(loc =6,column ="Score_After_Negative",value =score_af_neg)
+#    concise_marksheet["Options"] = last_list
+#    os.makedirs("sample_output",exist_ok = True)
+#    os.makedirs(sample_output_path,exist_ok = True)
+#    concise_marksheet.to_csv(sample_output_path+"/concise_marksheet.csv", index=False)
+#    return  
         
 #generate_concise_marksheet()
 #generate_marksheet()

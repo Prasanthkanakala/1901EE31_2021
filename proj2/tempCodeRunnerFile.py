@@ -1,0 +1,1 @@
+app.secret_key= b'Prasanth@77777'

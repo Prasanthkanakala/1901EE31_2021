@@ -114,7 +114,7 @@ def master():
 def concise():
     if not handle_cases(request):
         return redirect(url_for('index'))
-    helper.generate_concise_marksheet(correct_marks,wrg_marks)
+    helper.generate_concise_marksheet()
     dict_bool["concise_response"] = "Generated Successfully"
     return redirect(url_for('index'))
 
