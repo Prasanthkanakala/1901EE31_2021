@@ -18,6 +18,8 @@ def get():
         z=1
     return render_template('index.html')
 
+app.secret_key= b'Prasanth@77777'
+
 @app.route("/all" , methods=["POST","GET"])
 def generate_all():
     if flask.request.method=='POST':

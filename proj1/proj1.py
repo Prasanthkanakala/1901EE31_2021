@@ -21,6 +21,8 @@ sample_input_path = "./sample_input"
 sample_output_path = "./sample_output"
 correct_marks,wrg_marks = 0,0
 
+app.secret_key= b'Prasanth@77777'
+
 @app.route('/RollNo',methods=['GET','POST'])
 def rollno():
     if not handle_cases(request):
